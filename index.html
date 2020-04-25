@@ -14,6 +14,10 @@
 </head>
 <body>
 <canvas id="c-dst" width="512" height="512"></canvas>
+<select id="selectPattern">
+	<option selected value="0">0 1/4</option>
+	<option value="1">WRGB 1/2</option>
+</select>
 <select id="se">
 	<option selected value="e-linear.png">Basic grad</option>
 	<option value="e-linear-32.png">32 grad</option>
@@ -71,8 +75,6 @@
 	  ];
 	}
 
-	var cmapsize = 8;
-
 	function c2i (c) {
 		return ~~ (((c[0]+c[1]+c[2])/768)*cmapsize);
 	}
@@ -93,27 +95,42 @@
 		return [r/4,g/4,b/4,1];
 	}
 
+	var cmapsize = 1;
+
 	var cmap = [
-		[0,0,0,0],
-		[0,0,0,1],
-		[0,0,0,0],
-		[0,0,0,0],
-		[0,0,0,0],
-		[0,0,0,1],
-		[0,0,0,0],
 		[0,0,0,0],
 	];
 
-	var cmap2 = [
-		[0,0,0,0],
-		[1,1,1,1],
-		[0,0,0,0],
-		[1,0,0,1],
-		[0,0,0,0],
-		[0,1,0,1],
-		[0,0,0,0],
-		[0,0,1,1],
+	var maps = [
+		{
+			map: [
+				[0,0,0,0],
+				[0,0,0,1],
+				[0,0,0,0],
+				[0,0,0,0],
+				[0,0,0,0],
+				[0,0,0,1],
+				[0,0,0,0],
+				[0,0,0,0],
+			]
+		},
+		{
+			map: [
+				[0,0,0,0],
+				[1,1,1,1],
+				[0,0,0,0],
+				[1,0,0,1],
+				[0,0,0,0],
+				[0,1,0,1],
+				[0,0,0,0],
+				[0,0,1,1],
+			]
+		},
 	];
+
+	function setMap () {
+		;
+	}
 
 	function cat (i) {
 		return cmap[i];
@@ -145,10 +162,22 @@
 
 	var sc = document.getElementById("se");
 	sc.onchange = function() {
-		reload();
+		reloadImage();
 	}
 
-	function reload () {
+	var selectPattern = document.getElementById("selectPattern");
+	selectPattern.onchange = function() {
+		reloadPattern();
+	}
+
+	function reloadPattern () {
+		let index = selectPattern.value;
+		cmap = maps[index].map;
+		cmapsize = cmap.length;
+	}
+	reloadPattern();
+
+	function reloadImage () {
 		var img_1 = new Image();
 		img_1.onload = function () {
 			ccSrc.drawImage(img_1,0,0);
@@ -156,7 +185,7 @@
 		}
 		img_1.src = sc.value;
 	}
-	reload();
+	reloadImage();
 	requestAnimationFrame(shit);
 </script>
 </body>
