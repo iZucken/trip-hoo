@@ -10,10 +10,22 @@
 			padding: 0;
 			border: none;
 		}
+		.mc {
+		    /*transform: scale(2);*/
+		    image-rendering: optimizeSpeed;
+		    image-rendering: -moz-crisp-edges;
+		    image-rendering: -o-crisp-edges;
+		    image-rendering: -webkit-optimize-contrast;
+		    image-rendering: pixelated;
+		    image-rendering: optimize-contrast;
+		    -ms-interpolation-mode: nearest-neighbor;
+		    /*transform-origin: left top;*/
+		}
 	</style>
 </head>
 <body>
-<canvas id="c-dst" width="512" height="512"></canvas>
+<canvas id="c-dst" width="512" height="512" class="mc"></canvas>
+<div style="position:fixed;top:0px;right:0px;">
 <select id="selectPattern">
 	<option selected value="0">0 1/4</option>
 	<option value="1">WRGB 1/2</option>
@@ -21,11 +33,14 @@
 <select id="se">
 	<option selected value="e-linear.png">Basic grad</option>
 	<option value="e-linear-32.png">32 grad</option>
-	<option value="e-circular.png">Circular</option>
+	<option value="e-c-1.png">Circular 1</option>
+	<option value="e-c-2.png">Circular 2</option>
 	<option value="e-radial.png">Radial</option>
 	<option value="p-0.png">Piece 0</option>
+	<option value="p-1.png">Piece 1</option>
 	<option value="p-2.png">Piece 2</option>
 	<option value="p-3.png">Piece 3</option>
+	<option value="p-3-1.png">Piece 3-1</option>
 	<option value="e1.png">Depth grad</option>
 	<option value="e2.png">Rings</option>
 	<option value="e3.png">Leafs</option>
@@ -35,6 +50,7 @@
 	<option value="e7.png">Vortex</option>
 	<option value="e8.png">Smudge</option>
 </select>
+</div>
 <script type="text/javascript">
 	var cSrc = document.createElement('canvas');
 	cSrc.width = 512;
@@ -144,6 +160,7 @@
 	    for (let y = 0; y < 512; y++) {
 	      var t = at(id_src,x,y);
 	      tv = (t[0]+t[1]+t[2])/768;
+	      // tv = (t[0]+t[1]+t[2]+t[3])/1024;
 	      var v = (tv+l)%1;
 	      var c = cat(v2i(v));
 	      if (typeof c === "function") {
