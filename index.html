@@ -28,7 +28,7 @@
 <div style="position:fixed;top:0px;right:0px;">
 <select id="selectPattern">
 	<option selected value="0">0 1/4</option>
-	<option value="1">WRGB 1/2</option>
+	<option value="1">RAINBOW</option>
 </select>
 <select id="se">
 	<option selected value="e-linear.png">Basic grad</option>
@@ -132,14 +132,18 @@
 		},
 		{
 			map: [
-				[0,0,0,0],
-				[1,1,1,1],
-				[0,0,0,0],
 				[1,0,0,1],
-				[0,0,0,0],
+				[1,.5,0,1],
+				[1,1,0,1],
+				[.5,1,0,1],
 				[0,1,0,1],
-				[0,0,0,0],
+				[0,1,.5,1],
+				[0,1,1,1],
+				[0,.5,1,1],
 				[0,0,1,1],
+				[.5,0,1,1],
+				[1,0,1,1],
+				[1,0,.5,1],
 			]
 		},
 	];
