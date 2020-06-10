@@ -147,7 +147,7 @@ function rgbaValue(imageDataSource, x, y) {
         imageDataSource.data[at + 3]) / 1024;
 }
 
-let cMapSize = 1;
+// let cMapSize = 1;
 let cLevelFunction = () => {
     return 0;
 };
@@ -156,36 +156,32 @@ let cMap = [
     [0, 0, 0, 0],
 ];
 
-function colorAt(i) {
-    return cMap[i];
-}
-
-function levelFunction(now) {
-    return (
-        (10 + Math.sin(now / 1024) * 10)
-        % 20
-    ) / 20;
-}
+let at = [0, 0];
+let atWrap = [0, 0];
+let wrapSize = [512, 512];
 
 function shit(now) {
     if (imageDataSource) {
         for (let x = 0; x < 512; x++) {
             for (let y = 0; y < 512; y++) {
                 putColor(imageDataBuffer, x, y, cMap[
-                    valueIndex(cValueFunction(imageDataSource, x, y) + cLevelFunction(now), cMapSize)
+                    valueIndex(cValueFunction(imageDataSource, x, y) + cLevelFunction(now), cMap.length)
                     ]);
             }
         }
         // bufferCanvasContext.putImageData(imageDataBuffer, 0, 0);
         // destinationCanvasContext.drawImage(bufferCanvas, 0, 0);
-        destinationCanvasContext.putImageData(imageDataBuffer, 0, 0);
+        destinationCanvasContext.putImageData(imageDataBuffer, atWrap[0] - wrapSize[0], atWrap[1] - wrapSize[1]);
+        destinationCanvasContext.putImageData(imageDataBuffer, atWrap[0], atWrap[1] - wrapSize[1]);
+        destinationCanvasContext.putImageData(imageDataBuffer, atWrap[0] - wrapSize[0], atWrap[1]);
+        destinationCanvasContext.putImageData(imageDataBuffer, atWrap[0], atWrap[1]);
     }
     requestAnimationFrame(shit);
 }
 
 function reloadColorMap() {
     cMap = colorMaps[selectColorPattern.value].map;
-    cMapSize = cMap.length;
+    // cMapSize = cMap.length;
 }
 
 function reloadLevelFunction() {
@@ -208,3 +204,33 @@ reloadColorMap();
 reloadImage();
 reloadLevelFunction();
 requestAnimationFrame(shit);
+
+let dragOrigin = [0, 0];
+let atOrigin = [0, 0];
+let drags = false;
+
+document.onmousedown = event => {
+    dragOrigin[0] = event.clientX;
+    dragOrigin[1] = event.clientY;
+    atOrigin[0] = at[0];
+    atOrigin[1] = at[1];
+    drags = true;
+};
+
+document.onmouseup = event => {
+    drags = false;
+};
+
+document.onmousemove = event => {
+    if (drags) {
+        at[0] = atOrigin[0] + (event.clientX - dragOrigin[0]);
+        at[1] = atOrigin[1] + (event.clientY - dragOrigin[1]);
+        atWrap[0] = at[0] % wrapSize[0];
+        atWrap[0] = atWrap[0] < 0 ? atWrap[0] + 512 : atWrap[0];
+        // atWrap[0] = Math.abs(at[0] % wrapSize[0]);
+        atWrap[1] = at[1] % wrapSize[1];
+        atWrap[1] = atWrap[1] < 0 ? atWrap[1] + 512 : atWrap[1];
+        // atWrap[1] = Math.abs(at[1] % wrapSize[1]);
+        l(at,atWrap);
+    }
+};

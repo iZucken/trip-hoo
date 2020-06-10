@@ -25,13 +25,13 @@ function putColor(id, x, y, c) {
     id.data[at + 2] = c[2] * 255;
     id.data[at + 3] = c[3] * 255;
 }
-
-function at(id, x, y) {
-    let at = offset(id, x, y);
-    return [
-        id.data[at],
-        id.data[at + 1],
-        id.data[at + 2],
-        id.data[at + 3],
-    ];
-}
+//
+// function at(id, x, y) {
+//     let at = offset(id, x, y);
+//     return [
+//         id.data[at],
+//         id.data[at + 1],
+//         id.data[at + 2],
+//         id.data[at + 3],
+//     ];
+// }
