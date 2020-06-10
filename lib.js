@@ -18,7 +18,7 @@ function offset(id, x, y) {
     return (id.width * y + x) * 4;
 }
 
-function putc(id, x, y, c) {
+function putColor(id, x, y, c) {
     let at = offset(id, x, y);
     id.data[at] = c[0] * 255;
     id.data[at + 1] = c[1] * 255;

@@ -1,5 +1,6 @@
 let patterns = [
     {title: 'Basic grad', path: 'e-linear.png', valueFunction: rgbValue},
+    {title: 'Grad 32', path: 'e-linear-32.png', valueFunction: rgbaValue},
     {title: 'Radial', path: 'e-radial.png', valueFunction: rgbValue},
     {title: 'Circular', path: 'e-c-1.png', valueFunction: rgbValue},
     {title: 'Circulars', path: 'e-c-2.png', valueFunction: rgbValue},
@@ -16,7 +17,6 @@ let patterns = [
     {title: 'Liquid', path: 'e6.png', valueFunction: rgbValue},
     {title: 'Vortex', path: 'e7.png', valueFunction: rgbValue},
     {title: 'Smudge', path: 'e8.png', valueFunction: rgbValue},
-    {title: 'Grad 32', path: 'e-linear-32.png', valueFunction: rgbaValue},
 ];
 let colorMaps = [
     {
@@ -33,7 +33,7 @@ let colorMaps = [
         ]
     },
     {
-        title: 'b-w 1/2/3/4',
+        title: 'b-w 1-4',
         map: [
             [0, 0, 0, 1],
             [0.33, 0.33, 0.33, 1],
@@ -59,6 +59,29 @@ let colorMaps = [
         ]
     },
 ];
+let levelFunctions = [
+    {
+        title: "Static",
+        function: now => {
+            return 0;
+        }
+    },
+    {
+        title: "Linear time",
+        function: now => {
+            return now / 2048;
+        }
+    },
+    {
+        title: "Sine of time",
+        function: now => {
+            return (
+                (10 + Math.sin(now / 1024) * 10)
+                % 20
+            ) / 20;
+        }
+    },
+];
 let characterSprite = 'res/c.png';
 
 function loadSelector(id, options, selectCallback) {
@@ -78,6 +101,7 @@ function loadSelector(id, options, selectCallback) {
 
 let selectPattern = loadSelector("selectPattern", patterns, reloadImage);
 let selectColorPattern = loadSelector("selectColorPattern", colorMaps, reloadColorMap);
+let selectLevelFunction = loadSelector("selectLevelFunction", levelFunctions, reloadLevelFunction);
 
 let sourceCanvas = document.createElement('canvas');
 sourceCanvas.width = 512;
@@ -96,11 +120,7 @@ let destinationCanvasContext = destinationCanvas.getContext("2d");
 let imageDataSource = null;
 let imageDataBuffer = destinationCanvasContext.createImageData(512, 512);
 
-function c2i(c) {
-    return ~~(((c[0] + c[1] + c[2]) / cmapdepth) * cmapsize);
-}
-
-function v2i(v, s) {
+function valueIndex(v, s) {
     return ((v % 1) * s) | 0;
 }
 
@@ -127,15 +147,17 @@ function rgbaValue(imageDataSource, x, y) {
         imageDataSource.data[at + 3]) / 1024;
 }
 
-let cmapsize = 1;
-let cmapdepth = 768;
+let cMapSize = 1;
+let cLevelFunction = () => {
+    return 0;
+};
 let cValueFunction = rgbValue;
-let cmap = [
+let cMap = [
     [0, 0, 0, 0],
 ];
 
-function cat(i) {
-    return cmap[i];
+function colorAt(i) {
+    return cMap[i];
 }
 
 function levelFunction(now) {
@@ -149,9 +171,9 @@ function shit(now) {
     if (imageDataSource) {
         for (let x = 0; x < 512; x++) {
             for (let y = 0; y < 512; y++) {
-                putc(imageDataBuffer, x, y, cat(
-                    v2i(cValueFunction(imageDataSource, x, y) + levelFunction(now), cmapsize)
-                ));
+                putColor(imageDataBuffer, x, y, cMap[
+                    valueIndex(cValueFunction(imageDataSource, x, y) + cLevelFunction(now), cMapSize)
+                    ]);
             }
         }
         // bufferCanvasContext.putImageData(imageDataBuffer, 0, 0);
@@ -162,9 +184,12 @@ function shit(now) {
 }
 
 function reloadColorMap() {
-    let index = selectColorPattern.value;
-    cmap = colorMaps[index].map;
-    cmapsize = cmap.length;
+    cMap = colorMaps[selectColorPattern.value].map;
+    cMapSize = cMap.length;
+}
+
+function reloadLevelFunction() {
+    cLevelFunction = levelFunctions[selectLevelFunction.value].function;
 }
 
 function reloadImage() {
@@ -181,4 +206,5 @@ function reloadImage() {
 
 reloadColorMap();
 reloadImage();
+reloadLevelFunction();
 requestAnimationFrame(shit);
