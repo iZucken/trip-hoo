@@ -105,7 +105,7 @@ let selectLevelFunction = loadSelector("selectLevelFunction", levelFunctions, re
 
 let speed = 1;
 let speedSlider = document.getElementById('speedSlider');
-speedSlider.oninput = () => speed = speedSlider.value;
+speedSlider.oninput = () => speed = parseFloat(speedSlider.value);
 
 let sourceCanvas = document.createElement('canvas');
 sourceCanvas.width = 512;
@@ -128,14 +128,6 @@ function valueIndex(v, s) {
     return ((v % 1) * s) | 0;
 }
 
-// function rgbValue(c) {
-//     return (c[0] + c[1] + c[2]) / 768;
-// }
-//
-// function rgbaValue(c) {
-//     return (c[0] + c[1] + c[2] + c[3]) / 1024;
-// }
-
 function rgbValue(imageDataSource, x, y) {
     let at = offset(imageDataSource, x, y);
     return (imageDataSource.data[at] +
@@ -151,7 +143,6 @@ function rgbaValue(imageDataSource, x, y) {
         imageDataSource.data[at + 3]) / 1024;
 }
 
-// let cMapSize = 1;
 let cLevelFunction = () => {
     return 0;
 };
@@ -185,7 +176,6 @@ function shit(now) {
 
 function reloadColorMap() {
     cMap = colorMaps[selectColorPattern.value].map;
-    // cMapSize = cMap.length;
 }
 
 function reloadLevelFunction() {
@@ -235,6 +225,6 @@ document.onmousemove = event => {
         atWrap[1] = at[1] % wrapSize[1];
         atWrap[1] = atWrap[1] < 0 ? atWrap[1] + 512 : atWrap[1];
         // atWrap[1] = Math.abs(at[1] % wrapSize[1]);
-        l(at,atWrap);
+        // l(at,atWrap);
     }
 };

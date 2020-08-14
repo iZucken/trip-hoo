@@ -25,7 +25,15 @@ function putColor(id, x, y, c) {
     id.data[at + 2] = c[2] * 255;
     id.data[at + 3] = c[3] * 255;
 }
-//
+
+function rgbValue(c) {
+    return (c[0] + c[1] + c[2]) / 768;
+}
+
+function rgbaValue(c) {
+    return (c[0] + c[1] + c[2] + c[3]) / 1024;
+}
+
 // function at(id, x, y) {
 //     let at = offset(id, x, y);
 //     return [
