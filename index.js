@@ -103,6 +103,10 @@ let selectPattern = loadSelector("selectPattern", patterns, reloadImage);
 let selectColorPattern = loadSelector("selectColorPattern", colorMaps, reloadColorMap);
 let selectLevelFunction = loadSelector("selectLevelFunction", levelFunctions, reloadLevelFunction);
 
+let speed = 1;
+let speedSlider = document.getElementById('speedSlider');
+speedSlider.oninput = () => speed = speedSlider.value;
+
 let sourceCanvas = document.createElement('canvas');
 sourceCanvas.width = 512;
 sourceCanvas.height = 512;
@@ -165,8 +169,8 @@ function shit(now) {
         for (let x = 0; x < 512; x++) {
             for (let y = 0; y < 512; y++) {
                 putColor(imageDataBuffer, x, y, cMap[
-                    valueIndex(cValueFunction(imageDataSource, x, y) + cLevelFunction(now), cMap.length)
-                    ]);
+                    valueIndex(cValueFunction(imageDataSource, x, y) + cLevelFunction(now * speed), cMap.length)
+                ]);
             }
         }
         // bufferCanvasContext.putImageData(imageDataBuffer, 0, 0);
